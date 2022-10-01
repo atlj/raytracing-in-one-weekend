@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
-
 #include <chrono>
+
+#include "vec3.h"
+#include "color.h"
 
 using std::cout;
 using std::chrono::steady_clock;
@@ -23,14 +25,8 @@ int main()
     {
         for (int x = 0; x < width; ++x)
         {
-            double r = double(x) / (width - 1);
-            double g = double(y) / (height - 1);
-            double b = 0.25;
-
-            int ir = static_cast<int>(255.999 * r);
-            int ig = static_cast<int>(255.999 * g);
-            int ib = static_cast<int>(255.999 * b);
-            image << ir << " " << ig << " " << ib << "\n";
+            color pixel_color(double(x) / (width - 1), double(y) / (height - 1), 0.25);
+            write_color(image, pixel_color);
         }
         cout << (float(y) / float(height - 1)) * 100.0 << "%\n"
              << std::flush;
