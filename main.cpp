@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 
+#include <chrono>
+
 using std::cout;
 using std::chrono::steady_clock;
 
@@ -23,7 +25,7 @@ int main()
         {
             double r = double(x) / (width - 1);
             double g = double(y) / (height - 1);
-            double b = 0.5;
+            double b = 0.25;
 
             int ir = static_cast<int>(255.999 * r);
             int ig = static_cast<int>(255.999 * g);
