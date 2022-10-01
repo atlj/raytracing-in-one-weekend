@@ -1,0 +1,10 @@
+# Output file
+image.ppm
+
+# Debugging symbols
+a.out.dSYM
+main.dSYM
+
+# Compiled files
+main
+*.o 
