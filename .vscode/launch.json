@@ -11,7 +11,7 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb",
-            "preLaunchTask": "build-cmake"
+            "preLaunchTask": "build"
         }
     ],
     "version": "2.0.0"
