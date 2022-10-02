@@ -13,7 +13,8 @@ This is my implementation of the [Ray tracing in one weekend](https://raytracing
 
 ### Build
 
-I'm using [Clang++](https://clang.llvm.org/) to build and debug the code with vscode. You can use any compiler you like.
+I've used Cmake to make the project. And spent some time to make sure i can work with Visual Studio Code. Just grab the [Cmake extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools) and you're good to go.
+
 
 ### File output
 
