@@ -9,10 +9,36 @@
 using std::cout;
 using std::chrono::steady_clock;
 
+point3 sphere_center = point3(0, 0, -1);
+
+double hit_sphere(const point3 &center, double radius, const ray &r)
+{
+    vec3 oc = r.getOrigin() - center;
+    auto a = dot(r.getDirection(), r.getDirection());
+    auto b = 2.0 * dot(oc, r.getDirection());
+    auto c = dot(oc, oc) - radius * radius;
+    auto discriminant = b * b - 4 * a * c;
+
+    if (discriminant < 0)
+    {
+        return -1;
+    }
+    else
+    {
+        return (-b - sqrt(discriminant)) / (2.0 * a);
+    }
+}
+
 color ray_color(const ray &ray)
 {
+    auto distance = hit_sphere(sphere_center, 0.5, ray);
+    if (distance > 0.0)
+    {
+        vec3 normal = unit_vector(ray.at(distance) - sphere_center);
+        return (0.5 * color(normal.x() + 1, normal.y() + 1, normal.z() + 1));
+    }
     vec3 unit_direction = unit_vector(ray.getDirection());
-    auto distance = 0.5 * (unit_direction.y() + 1.0);
+    distance = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - distance) * color(1.0, 1.0, 1.0) + distance * color(0.5, 0.7, 1.0);
 }
 
@@ -48,10 +74,11 @@ int main()
             auto u = double(x) / (image_width - 1);
             auto v = double(y) / (image_height - 1);
             ray r = ray(origin, lower_left_corner + u * horizontal + v * vertical - origin);
+
             color pixel_color = ray_color(r);
             write_color(image, pixel_color);
         }
-        cout << (float(y) / float(image_height - 1)) * 100.0 << "%\n"
+        cout << (float(image_height - y) / float(image_height)) * 100.0 << "%\n"
              << std::flush;
     }
     image.close();
