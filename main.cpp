@@ -5,41 +5,27 @@
 #include "vec3.h"
 #include "color.h"
 #include "ray.h"
+#include "sphere.h"
 
 using std::cout;
 using std::chrono::steady_clock;
 
 point3 sphere_center = point3(0, 0, -1);
 
-double hit_sphere(const point3 &center, double radius, const ray &r)
-{
-    vec3 oc = r.getOrigin() - center;
-    auto a = dot(r.getDirection(), r.getDirection());
-    auto b = 2.0 * dot(oc, r.getDirection());
-    auto c = dot(oc, oc) - radius * radius;
-    auto discriminant = b * b - 4 * a * c;
-
-    if (discriminant < 0)
-    {
-        return -1;
-    }
-    else
-    {
-        return (-b - sqrt(discriminant)) / (2.0 * a);
-    }
-}
-
 color ray_color(const ray &ray)
 {
-    auto distance = hit_sphere(sphere_center, 0.5, ray);
-    if (distance > 0.0)
+    sphere sphere1 = sphere(sphere_center, 0.5);
+    hit_record rec = hit_record();
+    sphere1.hit(ray, 0, 100, rec);
+    if (rec.distance > 0.0)
     {
-        vec3 normal = unit_vector(ray.at(distance) - sphere_center);
-        return (0.5 * color(normal.x() + 1, normal.y() + 1, normal.z() + 1));
+        return (0.5 * color(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1));
     }
+
+    // Gradient on backgorund
     vec3 unit_direction = unit_vector(ray.getDirection());
-    distance = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - distance) * color(1.0, 1.0, 1.0) + distance * color(0.5, 0.7, 1.0);
+    rec.distance = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - rec.distance) * color(1.0, 1.0, 1.0) + rec.distance * color(0.5, 0.7, 1.0);
 }
 
 int main()
