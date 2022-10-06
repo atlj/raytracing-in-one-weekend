@@ -41,6 +41,8 @@ bool sphere::hit(const ray &r, double min_distance, double max_distance, hit_rec
     rec.distance = root;
     rec.point = r.at(rec.distance);
     rec.normal = (rec.point - center) / radius;
+    vec3 outward_normal_unit = (rec.point - center) / radius;
+    rec.set_face_normal(r, outward_normal_unit);
 }
 
 #endif
