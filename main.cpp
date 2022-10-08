@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "utils.h"
+#include "vec3.h"
 
 #include "color.h"
 #include "sphere.h"
@@ -12,15 +13,21 @@
 using std::cout;
 using std::chrono::steady_clock;
 
-color ray_color(const ray &ray, const hittable &world)
+color ray_color(const ray &r, const hittable &world, int depth)
 {
-    hit_record rec;
-    if (world.hit(ray, 0, infinity, rec))
+    if (depth <= 0)
     {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        return color(0, 0, 0);
     }
 
-    vec3 unit_direction = unit_vector(ray.getDirection());
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec))
+    {
+        point3 target = rec.point + rec.normal + random_point_in_unit_sphere();
+        return 0.5 * ray_color(ray(rec.point, target - rec.point), world, depth - 1);
+    }
+
+    vec3 unit_direction = unit_vector(r.getDirection());
     auto distance = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - distance) * color(1.0, 1.0, 1.0) + distance * color(0.5, 0.7, 1.0);
 }
@@ -34,6 +41,7 @@ int main()
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 100;
+    const int max_depth = 50;
     std::ofstream image;
     image.open("image.ppm");
 
@@ -60,7 +68,7 @@ int main()
                 auto u = (x + random_double()) / (image_width - 1);
                 auto v = (y + random_double()) / (image_height - 1);
                 ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world);
+                pixel_color += ray_color(r, world, max_depth);
             }
 
             write_color(image, pixel_color, samples_per_pixel);
